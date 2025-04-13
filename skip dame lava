@@ -1,0 +1,30 @@
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+
+for _, v in pairs(workspace:GetDescendants()) do
+    if v:IsA("BasePart") and (v.Name:lower():find("lava") or v.Material == Enum.Material.Neon) then
+        v.CanTouch = false
+        v.CanCollide = true
+        v.Transparency = 0
+    end
+end
+
+local function createPlatform()
+    local part = Instance.new("Part")
+    part.Size = Vector3.new(6, 1, 6)
+    part.Anchored = true
+    part.Transparency = 1
+    part.CanCollide = true
+    part.Name = "SafePlatform"
+    part.Parent = workspace
+    return part
+end
+
+local safePlatform = createPlatform()
+
+game:GetService("RunService").RenderStepped:Connect(function()
+    if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        local hrp = player.Character.HumanoidRootPart
+        safePlatform.Position = Vector3.new(hrp.Position.X, hrp.Position.Y - 6, hrp.Position.Z)
+    end
+end)
